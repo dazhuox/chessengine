@@ -50,6 +50,11 @@ class Engine:
         if(self.board.piece_type_at(square) == ch.ROOK):
             piece_value = 5.1
 
+        if (self.board.color_at(square) != self.color):
+            return -piece_value
+        else:
+            return piece_value
+
     def opening(self):
         if (self.board.fullmove_Number < 10):
             if self.board.turn == self.color:
