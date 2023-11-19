@@ -1,12 +1,14 @@
 import chess_engine as ce
 import chess as ch
-import threading as th
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
 
 class Main:
 
-    def __init__(self, board=ch.Board, choose=str):
-        self.board=board
-        self.choose=choose
+    def __init__(self):
+        self.board = ch.Board()
+        self.choose = ""
 
     def timer(self):
         print("you win or lose")
@@ -102,6 +104,24 @@ class Main:
         self.startGame()
 
 #create an instance and start a game
-newBoard= ch.Board()
-game = Main(newBoard,"")
-bruh = game.startGame()
+# newBoard= ch.Board()
+# game = Main(newBoard,"")
+# bruh = game.startGame()
+
+game = Main()
+
+@app.route('/', methods=["GET"])
+def index():
+    return render_template('index.html', board=game.board, choose=game.choose)
+
+@app.route('/make_move', methods=['POST'])
+def make_move():
+    if request.method == 'POST':
+        move = request.form.get('move')
+        game.play_human_move(move)
+        game.play_engine_move()
+
+    return render_template('index.html', board=game.board, choose=game.choose)
+
+if __name__ == '__main__':
+    app.run(debug=True)
