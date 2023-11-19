@@ -29,9 +29,9 @@ class Engine:
         else:
             return 0
 
-    # to make the engine develop in the first moves
+    # to make the engine developp in the first moves
     def openning(self):
-        if (self.board.fullmove_number < 7):
+        if (self.board.fullmove_number < 10):
             if (self.board.turn == self.color):
                 return 1 / 30 * self.board.legal_moves.count()
             else:

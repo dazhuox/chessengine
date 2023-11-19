@@ -1,10 +1,15 @@
-import yt_chess_engine as ce
+import chess_engine as ce
 import chess as ch
+import threading as th
 
 class Main:
 
-    def __init__(self, board=ch.Board):
+    def __init__(self, board=ch.Board, choose=str):
         self.board=board
+        self.choose=choose
+
+    def timer(self):
+        print("you win or lose")
 
     #play human move
     def playHumanMove(self):
@@ -27,6 +32,32 @@ class Main:
         engine = ce.Engine(self.board, maxDepth, color)
         self.board.push(engine.getBestMove())
 
+    def changeMaxDepth(self):
+        print(self.board.legal_moves.count())
+        if(self.choose == "Beginner"):
+            if self.board.legal_moves.count() > 50:
+                return 2
+            elif len(self.board.piece_map()) < 6:
+                return 2
+            else:
+                return 2
+        elif(self.choose == "Intermediate"):
+            if self.board.legal_moves.count() > 50:
+                return 3
+            elif len(self.board.piece_map()) < 6:
+                return 6
+            else:
+                return 4
+        elif(self.choose == "Hard"):
+            if self.board.legal_moves.count() > 50:
+                return 4
+            elif len(self.board.piece_map()) < 6:
+                return 9
+            else:
+                return 5
+        self.board.fullmove_number
+        self.board.legal_moves.count()
+
     #start a game
     def startGame(self):
         #get human player's color
@@ -34,22 +65,33 @@ class Main:
         while(color!="b" and color!="w"):
             color = input("""Play as (type "b" or "w"): """)
         maxDepth=None
-        while(isinstance(maxDepth, int)==False):
-            maxDepth = int(input("""Choose depth: """))
+        time=None
+        while(self.choose != "Beginner" and self.choose != "Hard"
+        and self.choose != "Intermediate"):
+            self.choose = input("Choose a difficulty (Beginner, Intermediate, and Hard): ")
+        while(isinstance(time, float)==False):
+            time = float(input("Timer (in minutes per player): "))
         if color=="b":
+            # realTime = th.Timer(time,self.timer)
+            # botTime = th.Timer(time,self.timer)
+            # botTime.start()
             while (self.board.is_checkmate()==False):
+                maxDepth = self.changeMaxDepth()
                 print("The engine is thinking...")
                 self.playEngineMove(maxDepth, ch.WHITE)
                 print(self.board)
                 self.playHumanMove()
                 print(self.board)
             print(self.board)
-            print(self.board.outcome())    
+            print(self.board.outcome())
         elif color=="w":
+            # realTime = th.Timer(time,self.timer)
+            # botTime = th.Timer(time,self.timer)
             while (self.board.is_checkmate()==False):
                 print(self.board)
                 self.playHumanMove()
                 print(self.board)
+                maxDepth = self.changeMaxDepth()
                 print("The engine is thinking...")
                 self.playEngineMove(maxDepth, ch.BLACK)
             print(self.board)
@@ -61,5 +103,5 @@ class Main:
 
 #create an instance and start a game
 newBoard= ch.Board()
-game = Main(newBoard)
+game = Main(newBoard,"")
 bruh = game.startGame()
